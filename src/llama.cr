@@ -21,7 +21,7 @@ module Llama
     topp = 0.9_f32 if topp < 0.0 || topp > 1.0
 
     Dir.mkdir("models") if !Dir.exists?("models")
-    File.copy("libs/llama/models/tokenizer.bin", "models/tokenizer.bin") if !File.exists?(tokenizer_path)
+    File.copy("lib/llama/models/tokenizer.bin", "models/tokenizer.bin") if !File.exists?(tokenizer_path)
 
     checkpoint_path = "models/#{model_filename}"
     if !File.exists?(checkpoint_path)
