@@ -1,0 +1,15 @@
+name: llama
+version: 0.1.0
+
+authors:
+  - Dmitry Lubimov <yukai@pm.me>
+
+crystal: '>= 1.11.2'
+
+license: MIT
+
+dependencies:
+  bindata:
+    github: spider-gazelle/bindata
+  crest:
+    github: mamantoha/crest
