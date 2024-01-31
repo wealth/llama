@@ -17,10 +17,10 @@ class Llama::Generator
 
     while pos < steps
       # Forward the transformer to get logits for the next token
-      time = Benchmark.measure do
-        @transformer.forward(token, pos)
-      end
-      puts "\ntotal forward time: #{time}"
+      # time = Benchmark.measure do
+      @transformer.forward(token, pos)
+      # end
+      # puts "\ntotal forward time: #{time}"
       # puts "next logits: #{@transformer.state.logits[0..5]}"
       # puts "sample for this logits: #{@sampler.sample(@transformer.state.logits)}"
 
@@ -36,7 +36,7 @@ class Llama::Generator
 
       token = next_token
       pos += 1
-      Process.exit(0)
+      # Process.exit(0)
     end
     # puts output
     # puts # New line for the end of output
@@ -45,7 +45,7 @@ class Llama::Generator
     end_time = Time.monotonic
     elapsed_seconds = (end_time - start).total_seconds
     tok_per_second = (pos - 1) / elapsed_seconds
-    puts "\nachieved tok/s: #{tok_per_second}"
+    # puts "\nachieved tok/s: #{tok_per_second}"
 
     output
   end

@@ -1,78 +1,78 @@
 module Llama
   def self.rmsnorm(xout : Array(Float32), x : Array(Float32), weight : Array(Float32), weight_offset : Int32, size : Int32)
     # Calculate sum of squares
-    time = Benchmark.measure do
-      ss = 0.0_f32
-      size.times do |j|
-        ss += x[j] * x[j]
-      end
-      ss /= size.to_f32
-      ss += 1e-5_f32
-      ss = 1.0_f32 / Math.sqrt(ss)
-
-      # Normalize and scale
-      size.times do |j|
-        # puts "xout.size = #{xout.size}, x.size = #{x.size}, weight.size = #{weight.size}"
-        xout[j] = weight[weight_offset + j] * (ss * x[j])
-      end
+    # time = Benchmark.measure do
+    ss = 0.0_f32
+    size.times do |j|
+      ss += x[j] * x[j]
     end
+    ss /= size.to_f32
+    ss += 1e-5_f32
+    ss = 1.0_f32 / Math.sqrt(ss)
+
+    # Normalize and scale
+    size.times do |j|
+      # puts "xout.size = #{xout.size}, x.size = #{x.size}, weight.size = #{weight.size}"
+      xout[j] = weight[weight_offset + j] * (ss * x[j])
+    end
+    # end
     # puts "rmsnorm time: #{time}"
   end
 
   def self.softmax(x : Array(Float32), x_offset : Int32 = 0, x_slice_size : Int32 = x.size)
-    time = Benchmark.measure do
-      # Find max value (for numerical stability)
-      max_val = x[x_offset + 0]
-      (1...x_slice_size).each do |i|
-        max_val = x[x_offset + i] if x[x_offset + i] > max_val
-      end
-
-      # Exp and sum
-      sum = 0.0_f32
-      x_slice_size.times do |i|
-        x[x_offset + i] = Math.exp(x[x_offset + i] - max_val)
-        sum += x[x_offset + i]
-      end
-
-      # Normalize
-      x_slice_size.times do |i|
-        x[x_offset + i] /= sum
-      end
+    # time = Benchmark.measure do
+    # Find max value (for numerical stability)
+    max_val = x[x_offset + 0]
+    (1...x_slice_size).each do |i|
+      max_val = x[x_offset + i] if x[x_offset + i] > max_val
     end
+
+    # Exp and sum
+    sum = 0.0_f32
+    x_slice_size.times do |i|
+      x[x_offset + i] = Math.exp(x[x_offset + i] - max_val)
+      sum += x[x_offset + i]
+    end
+
+    # Normalize
+    x_slice_size.times do |i|
+      x[x_offset + i] /= sum
+    end
+    # end
     # puts "softmax time: #{time}"
   end
 
   def self.matmul(xout : Array(Float32), x : Array(Float32), w : ArrayView(Float32), n : Int32, d : Int32)
     # W (d,n) @ x (n,) -> xout (d,)
-    time = Benchmark.measure do
-      d.times do |i|
-        # spawn do
-        val = 0.0_f32
-        n.times do |j|
-          val += w[i * n + j] * x[j]
-        end
-        xout[i] = val
-        # end
+    # time = Benchmark.measure do
+    d.times do |i|
+      # spawn do
+      val = 0.0_f32
+      n.times do |j|
+        val += w[i * n + j] * x[j]
       end
-      # Fiber.yield
+      xout[i] = val
+      # end
     end
+    # Fiber.yield
+    # end
     # puts "matmul of #{d}x#{n} time: #{time}"
   end
 
   def self.matmul(xout : ArrayView(Float32), x : Array(Float32), w : ArrayView(Float32), n : Int32, d : Int32)
     # W (d,n) @ x (n,) -> xout (d,)
-    time = Benchmark.measure do
-      d.times do |i|
-        # spawn do
-        val = 0.0_f32
-        n.times do |j|
-          val += w[i * n + j] * x[j]
-        end
-        xout[i] = val
-        # end
+    # time = Benchmark.measure do
+    d.times do |i|
+      # spawn do
+      val = 0.0_f32
+      n.times do |j|
+        val += w[i * n + j] * x[j]
       end
-      # Fiber.yield
+      xout[i] = val
+      # end
     end
+    # Fiber.yield
+    # end
     # puts "matmul #{d}x#{n} time: #{time}"
   end
 
