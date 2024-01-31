@@ -20,9 +20,13 @@ module Llama
     temperature = 0.0_f32 if temperature < 0.0
     topp = 0.9_f32 if topp < 0.0 || topp > 1.0
 
+    Dir.mkdir("models") if !Dir.exists?("models")
+    File.copy("libs/llama/models/tokenizer.bin", "models/tokenizer.bin") if !File.exists?(tokenizer_path)
+
     checkpoint_path = "models/#{model_filename}"
     if !File.exists?(checkpoint_path)
       puts "Downloading model from tinyllama..."
+
       download_model(
         "https://huggingface.co/karpathy/tinyllamas/resolve/main/#{model_filename}",
         checkpoint_path)
