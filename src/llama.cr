@@ -18,7 +18,6 @@ module Llama
     rng_seed = Time.utc.to_unix.to_u64 if rng_seed <= 0_u64
     temperature = 0.0 if temperature < 0.0
     topp = 0.9 if topp < 0.0 || topp > 1.0
-    steps = 0 if steps < 0
 
     checkpoint_path = "models/#{model_filename}"
     if !File.exist?(checkpoint_path)
