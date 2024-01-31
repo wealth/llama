@@ -28,7 +28,7 @@ module Llama
       puts "Downloading tokenizer from github..."
 
       download_file(
-        "https://github.com/karpathy/llama2.c/raw/master/#{model_filename}",
+        "https://github.com/karpathy/llama2.c/raw/master/#{tokenizer_filename}",
         tokenizer_path)
       raise ArgumentError.new("#{tokenizer_path} does not exist") if !File.exists?(tokenizer_path)
     end
