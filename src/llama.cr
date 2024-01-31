@@ -24,7 +24,7 @@ module Llama
     if !File.exists?(checkpoint_path)
       puts "Downloading model from tinyllama..."
       download_model(
-        "https://huggingface.co/karpathy/tinyllamas/resolve/main/#{checkpoint_path}",
+        "https://huggingface.co/karpathy/tinyllamas/resolve/main/#{model_filename}",
         checkpoint_path)
       raise ArgumentError.new("checkpoint_path does not exist") if !File.exists?(checkpoint_path)
     end
