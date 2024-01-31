@@ -46,8 +46,6 @@ module Llama
 
   private def self.download_model(url, path)
     Crest.get(url) do |resp|
-      filename = resp.filename || "crystal.zip"
-
       File.open(path, "w") do |file|
         IO.copy(resp.body_io, file)
       end
