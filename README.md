@@ -1,6 +1,6 @@
 # llama
 
-TODO: Write a description here
+this is very slow, do not use it
 
 ## Installation
 
