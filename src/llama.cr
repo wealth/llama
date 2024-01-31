@@ -1,4 +1,5 @@
 require "bindata"
+require "crest"
 require "./llama/**"
 
 module Llama
