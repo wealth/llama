@@ -3,6 +3,7 @@ class Llama::Generator
   end
 
   def generate(prompt : String, steps : Int32, &block : String ->)
+    raise "steps must be power of 2" if Math.sqrt(steps) % 2 != 0
     prompt = prompt.empty? ? "" : prompt
 
     # Encode the prompt into tokens sequence

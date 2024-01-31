@@ -63,6 +63,7 @@ struct Llama::Transformer
               score += @state.q[q_offset + i] * @state.key_cache[k_offset + i]
             end
             score /= Math.sqrt(head_size)
+            # puts "size: #{@state.att.size}, index: #{att_offset + t}"
             @state.att[att_offset + t] = score.to_f32
           end
 
