@@ -7,7 +7,8 @@ module Llama
 
   def self.build_simple_generator(
     model_filename : String = "stories15M.bin",
-    tokenizer_path : String = "models/tokenizer.bin",
+    tokenizer_filename : String = "tokenizer.bin",
+    models_dir : String = "models",
     temperature : Float32 = 1.0_f32,
     topp : Float32 = 0.9_f32,
     rng_seed : UInt64 = 0_u64
@@ -20,17 +21,26 @@ module Llama
     temperature = 0.0_f32 if temperature < 0.0
     topp = 0.9_f32 if topp < 0.0 || topp > 1.0
 
-    Dir.mkdir("models") if !Dir.exists?("models")
-    File.copy("lib/llama/models/tokenizer.bin", "models/tokenizer.bin") if !File.exists?(tokenizer_path)
+    Dir.mkdir(models_dir) if !Dir.exists?(models_dir)
 
-    checkpoint_path = "models/#{model_filename}"
+    tokenizer_path = "#{models_dir}/#{tokenizer_filename}"
+    if !File.exists?(tokenizer_path)
+      puts "Downloading tokenizer from github..."
+
+      download_file(
+        "https://github.com/karpathy/llama2.c/raw/master/#{model_filename}",
+        tokenizer_path)
+      raise ArgumentError.new("#{tokenizer_path} does not exist") if !File.exists?(tokenizer_path)
+    end
+
+    checkpoint_path = "#{models_dir}/#{model_filename}"
     if !File.exists?(checkpoint_path)
       puts "Downloading model from tinyllama..."
 
-      download_model(
+      download_file(
         "https://huggingface.co/karpathy/tinyllamas/resolve/main/#{model_filename}",
         checkpoint_path)
-      raise ArgumentError.new("checkpoint_path does not exist") if !File.exists?(checkpoint_path)
+      raise ArgumentError.new("#{checkpoint_path} does not exist") if !File.exists?(checkpoint_path)
     end
     model_file = File.open(checkpoint_path)
     model = model_file.read_bytes(Llama::TransformerFile)
@@ -48,7 +58,7 @@ module Llama
     return Llama::Generator.new(transformer, tokenizer, sampler)
   end
 
-  private def self.download_model(url, path)
+  private def self.download_file(url, path)
     Crest.get(url) do |resp|
       File.open(path, "w") do |file|
         IO.copy(resp.body_io, file)
