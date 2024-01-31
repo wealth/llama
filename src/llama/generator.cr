@@ -13,7 +13,7 @@ class Llama::Generator
     pos = 0
     token = prompt_tokens[0]
 
-    output = ""
+    # output = ""
 
     while pos < steps
       # Forward the transformer to get logits for the next token
@@ -31,8 +31,8 @@ class Llama::Generator
 
       # Print the token as string, decode it with the Tokenizer object
       piece = @tokenizer.decode(token, next_token)
-      output += piece.unicode_normalize
-      yield piece if block
+      # output += piece.unicode_normalize
+      yield piece if block && (pos >= prompt_tokens.size - 1)
 
       token = next_token
       pos += 1
@@ -47,6 +47,6 @@ class Llama::Generator
     tok_per_second = (pos - 1) / elapsed_seconds
     # puts "\nachieved tok/s: #{tok_per_second}"
 
-    output
+    # output
   end
 end
