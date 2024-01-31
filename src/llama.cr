@@ -26,7 +26,7 @@ module Llama
       download_model(
         "https://huggingface.co/karpathy/tinyllamas/resolve/main/#{checkpoint_path}",
         checkpoint_path)
-      raise ArgumentError, "checkpoint_path does not exist" if !File.exists?(checkpoint_path)
+      raise ArgumentError.new("checkpoint_path does not exist") if !File.exists?(checkpoint_path)
     end
     model_file = File.open(checkpoint_path)
     model = model_file.read_bytes(Llama::TransformerFile)
