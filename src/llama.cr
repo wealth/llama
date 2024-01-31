@@ -20,12 +20,12 @@ module Llama
     topp = 0.9 if topp < 0.0 || topp > 1.0
 
     checkpoint_path = "models/#{model_filename}"
-    if !File.exist?(checkpoint_path)
+    if !File.exists?(checkpoint_path)
       puts "Downloading model from tinyllama..."
       download_model(
         "https://huggingface.co/karpathy/tinyllamas/resolve/main/#{checkpoint_path}",
         checkpoint_path)
-      raise ArgumentError, "checkpoint_path does not exist" if !File.exist?(checkpoint_path)
+      raise ArgumentError, "checkpoint_path does not exist" if !File.exists?(checkpoint_path)
     end
     model_file = File.open(checkpoint_path)
     model = model_file.read_bytes(Llama::TransformerFile)
