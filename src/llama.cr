@@ -6,11 +6,11 @@ module Llama
   VERSION = "0.1.0"
 
   def self.build_simple_generator(
-    model_filename = "stories15M.bin",
-    tokenizer_path = "models/tokenizer.bin",
-    temperature = 1.0,
-    topp = 0.9,
-    rng_seed = 0_u64
+    model_filename : String = "stories15M.bin",
+    tokenizer_path : String = "models/tokenizer.bin",
+    temperature : Float32 = 1.0_f32,
+    topp : Float32 = 0.9_f32,
+    rng_seed : UInt64 = 0_u64
   )
     # Example of setting rng_seed based on current time if it's 0
     rng_seed = Time.utc.to_unix.to_u64 if rng_seed == 0_u64
