@@ -1,3 +1,5 @@
+require "benchmark"
+
 module Llama
   def self.rmsnorm(xout : Array(Float32), x : Array(Float32), weight : Array(Float32), weight_offset : Int32, size : Int32)
     # Calculate sum of squares
@@ -44,36 +46,56 @@ module Llama
 
   def self.matmul(xout : Array(Float32), x : Array(Float32), w : ArrayView(Float32), n : Int32, d : Int32)
     # W (d,n) @ x (n,) -> xout (d,)
-    # time = Benchmark.measure do
-    d.times do |i|
-      # spawn do
-      val = 0.0_f32
-      n.times do |j|
-        val += w[i * n + j] * x[j]
+    time = Benchmark.measure do
+      d.times do |i|
+        # spawn do
+        val = 0.0_f32
+        idx = i * n
+        n.times do |j|
+          val += w[idx + j] * x[j]
+        end
+        xout[i] = val
+        # end
       end
-      xout[i] = val
-      # end
+      # Fiber.yield
     end
-    # Fiber.yield
-    # end
-    # puts "matmul of #{d}x#{n} time: #{time}"
+    # puts "matmul1 of #{d}x#{n} time: #{time}"
   end
 
   def self.matmul(xout : ArrayView(Float32), x : Array(Float32), w : ArrayView(Float32), n : Int32, d : Int32)
     # W (d,n) @ x (n,) -> xout (d,)
-    # time = Benchmark.measure do
-    d.times do |i|
-      # spawn do
-      val = 0.0_f32
-      n.times do |j|
-        val += w[i * n + j] * x[j]
+    time = Benchmark.measure do
+      d.times do |i|
+        # spawn do
+        val = 0.0_f32
+        idx = i * n
+        n.times do |j|
+          val += w[idx + j] * x[j]
+        end
+        xout[i] = val
+        # end
       end
-      xout[i] = val
-      # end
+      # Fiber.yield
     end
-    # Fiber.yield
-    # end
-    # puts "matmul #{d}x#{n} time: #{time}"
+    # puts "matmul2 #{d}x#{n} time: #{time}"
+  end
+
+  def self.matmul(xout : Array(Float32), x : Array(Float32), w : Array(Float32), n : Int32, d : Int32)
+    # W (d,n) @ x (n,) -> xout (d,)
+    time = Benchmark.measure do
+      d.times do |i|
+        # spawn do
+        val = 0.0_f32
+        idx = i * n
+        n.times do |j|
+          val += w[idx + j] * x[j]
+        end
+        xout[i] = val
+        # end
+      end
+      # Fiber.yield
+    end
+    # puts "matmul3 of #{d}x#{n} time: #{time}"
   end
 
   def self.str_lookup(str : String, sorted_vocab : Array(TokenIndex)) : Int32

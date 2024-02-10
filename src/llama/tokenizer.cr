@@ -80,7 +80,7 @@ struct Llama::Tokenizer
       else
         # Handle byte fallback encoding
         str_buffer.each_byte do |byte|
-          tokens << byte + 3 # Adjusting for control tokens
+          tokens << byte.to_i + 3 # Adjusting for control tokens
         end
       end
     end

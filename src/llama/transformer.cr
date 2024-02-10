@@ -133,7 +133,7 @@ struct Llama::Transformer
     # end
     # puts "rmsnorm time: #{z}"
     # z = Benchmark.measure do
-    Llama.matmul(@state.logits, @state.x, ArrayView.new(@model.token_embedding_table, 0), dim, @model.config.vocab_size)
+    Llama.matmul(@state.logits, @state.x, @model.token_embedding_table, dim, @model.config.vocab_size)
     # end
     # puts "logits time: #{z}"
 

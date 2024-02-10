@@ -46,8 +46,7 @@ class Llama::Generator
     end_time = Time.monotonic
     elapsed_seconds = (end_time - start).total_seconds
     tok_per_second = (pos - 1) / elapsed_seconds
-    # puts "\nachieved tok/s: #{tok_per_second}"
-
+    puts "\nachieved tok/s: #{tok_per_second}"
     # output
   end
 end
