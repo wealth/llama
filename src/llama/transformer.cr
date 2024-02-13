@@ -6,7 +6,8 @@ struct Llama::Transformer
     @state = RunState.new(@model.config)
   end
 
-  def forward(token : Int32, pos : Int32) : Array(Float32)
+  # def forward(token : Int32, pos : Int32) : Array(Float32)
+  def forward(token : Int32, pos : Int32) : StaticArray(Float32, 32000)
     # puts "starting logits: #{@state.logits[0..5]}"
     dim = @model.config.dim
     hidden_dim = @model.config.hidden_dim
@@ -15,7 +16,11 @@ struct Llama::Transformer
     head_size = (dim / @model.config.n_heads).to_i
 
     # puts "token: #{token}, pos: #{pos}"
-    @state.x.replace(@model.token_embedding_table[token * dim, dim])
+    # @state.x.replace(@model.token_embedding_table[token * dim, dim])
+    tet_offset = token * dim
+    @state.x.fill(0..dim) do |i|
+      @model.token_embedding_table[tet_offset + i]
+    end
 
     # z = Benchmark.measure do
     @model.config.n_layers.times do |layer_idx|
@@ -134,6 +139,7 @@ struct Llama::Transformer
     # puts "rmsnorm time: #{z}"
     # z = Benchmark.measure do
     Llama.matmul(@state.logits, @state.x, @model.token_embedding_table, dim, @model.config.vocab_size)
+    # Llama.matmul(@state.logits, @state.x, @model.token_embedding_table)
     # end
     # puts "logits time: #{z}"
 

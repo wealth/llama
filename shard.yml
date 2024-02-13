@@ -13,3 +13,5 @@ dependencies:
     github: spider-gazelle/bindata
   crest:
     github: mamantoha/crest
+  num:
+    github: crystal-data/num.cr

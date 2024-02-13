@@ -7,7 +7,8 @@ class Llama::Sampler
   def initialize(@vocab_size : Int32, @temperature : Float32, @topp : Float32, @rng_state : UInt64)
   end
 
-  def sample(logits : Array(Float32)) : Int32
+  def sample(logits : StaticArray(Float32, 32000)) : Int32
+    # def sample(logits : Array(Float32)) : Int32
     next_token = 0
 
     if @temperature == 0.0_f32
